@@ -1,0 +1,39 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 30
+      },
+      "title": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 30
+      },
+      "equity": {
+        "type": "string"
+      },
+      "salary": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "references": {
+        "type": "string",
+        "minLength": 1
+      },
+      "company_handle": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 30
+      }
+    },
+    "additionalProperties": false,
+    "required": [
+      "title",
+      "handle",
+      "description"
+    ]
+  }
+ 
