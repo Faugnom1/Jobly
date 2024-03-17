@@ -16,6 +16,8 @@ beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
 
+/******************** Post Aurhtorization */
+
 describe("POST /jobs", function () {
   const newJob = {
     title: "New DevOps Specialist",
@@ -39,8 +41,26 @@ describe("POST /jobs", function () {
   });
 });
 
+/************************************** POST /jobs Authorization */
+
+describe("POST /jobs unauthorized access", function () {
+  const newJob = {
+    title: "New Unauthorized Job",
+    salary: 70000,
+    equity: "0",
+    companyHandle: "google",
+  };
+
+  test("unauth for non-admins", async function () {
+    const resp = await request(app)
+        .post("/jobs")
+        .send(newJob);
+    expect(resp.statusCode).toEqual(401);
+  });
+});
+
 describe("GET /jobs", function () {
-  test("ok for anon", async function () {
+  test("ok for all", async function () {
     const resp = await request(app).get("/jobs");
     expect(resp.body).toEqual({
       jobs: [
@@ -62,3 +82,47 @@ describe("GET /jobs", function () {
     });
   });
 });
+
+/************************************** GET /jobs Filtering */
+
+describe("GET /jobs with filters", function () {
+  test("filter by title", async function () {
+    const resp = await request(app).get("/jobs?title=Engineer");
+    expect(resp.body.jobs).toEqual([
+      {
+        id: expect.any(Number),
+        title: "Software Engineer",
+        salary: 120000,
+        equity: "0",
+        CompanyHandle: "google",
+      },
+    ]);
+  });
+
+  test("filter by minimum salary", async function () {
+    const resp = await request(app).get("/jobs?salary=115000");
+    expect(resp.body.jobs).toEqual([
+      {
+        id: expect.any(Number),
+        title: "Software Engineer",
+        salary: 120000,
+        equity: "0",
+        CompanyHandle: "google",
+      },
+    ]);
+  });
+
+  test("filter by equity", async function () {
+    const resp = await request(app).get("/jobs?equity=true");
+    expect(resp.body.jobs).toEqual([
+      {
+        id: expect.any(Number),
+        title: "Data Scientist",
+        salary: 110000,
+        equity: "0.2",
+        CompanyHandle: "amazon",
+      },
+    ]);
+  });
+});
+

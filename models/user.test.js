@@ -228,3 +228,33 @@ describe("remove", function () {
     }
   });
 });
+
+describe("apply", function () {
+  test("works", async function () {
+    const jobId = 1; // Assuming a jobId that exists
+    await User.apply("u1", jobId);
+    const res = await db.query("SELECT * FROM applications WHERE username='u1' AND job_id=$1", [jobId]);
+    expect(res.rows.length).toEqual(1);
+  });
+
+  test("fails if job does not exist", async function () {
+    expect.assertions(1);
+    try {
+      await User.apply("u1", 999); // Assuming jobId 999 does not exist
+      fail();
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+
+  test("fails if user does not exist", async function () {
+    expect.assertions(1);
+    try {
+      const jobId = 1; // Assuming a jobId that exists
+      await User.apply("nope", jobId);
+      fail();
+    } catch (err) {
+      expect(err instanceof BadRequestError).toBeTruthy();
+    }
+  });
+});

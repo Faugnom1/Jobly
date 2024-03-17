@@ -3,8 +3,8 @@ const { BadRequestError } = require("../expressError");
 /**
  * Generates a partial SQL update query string and corresponding values.
  *
- * This function constructs a dynamic SQL UPDATE statement for partially updating an entity. It
- * converts JavaScript camelCase properties to SQL snake_case column names via a mapping object.
+ * This function constructs a dynamic SQL UPDATE statement for partially updating an entity. It supports
+ * converting JavaScript camelCase properties to SQL snake_case column names via a mapping object.
  *
  * @param {Object} dataToUpdate - Object with properties to update (key: column name, value: new value).
  * @param {Object} jsToSql - Mapping from camelCase properties to snake_case SQL column names.

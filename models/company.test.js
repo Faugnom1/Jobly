@@ -101,6 +101,23 @@ describe("get", function () {
     });
   });
 
+  test("works: with jobs", async function () {
+    let company = await Company.get("c1");
+    expect(company).toEqual({
+      handle: "c1",
+      name: "C1",
+      description: "Desc1",
+      numEmployees: 1,
+      logoUrl: "http://c1.img",
+      jobs: [
+        // Assuming job details based on setup
+        { id: expect.any(Number), title: "Job1", salary: 100, equity: "0", companyHandle: "c1" },
+        // Add more job details as per your test setup
+      ],
+    });
+  });
+
+
   test("not found if no such company", async function () {
     try {
       await Company.get("nope");
@@ -110,6 +127,7 @@ describe("get", function () {
     }
   });
 });
+
 
 /************************************** update */
 
@@ -204,5 +222,81 @@ describe("remove", function () {
     } catch (err) {
       expect(err instanceof NotFoundError).toBeTruthy();
     }
+  });
+});
+/************************************** filter */
+
+describe("filterByParams", function () {
+  test("works: by name", async function () {
+    let companies = await Company.filterByParams({ name: "C1" });
+    expect(companies).toEqual([
+      {
+        handle: "c1",
+        name: "C1",
+        description: "Desc1",
+        numEmployees: 1,
+        logoUrl: "http://c1.img",
+      },
+    ]);
+  });
+
+  test("works: by minEmployees", async function () {
+    let companies = await Company.filterByParams({ minEmployees: 2 });
+    expect(companies).toEqual([
+      {
+        handle: "c2",
+        name: "C2",
+        description: "Desc2",
+        numEmployees: 2,
+        logoUrl: "http://c2.img",
+      },
+      {
+        handle: "c3",
+        name: "C3",
+        description: "Desc3",
+        numEmployees: 3,
+        logoUrl: "http://c3.img",
+      },
+    ]);
+  });
+
+  test("works: by maxEmployees", async function () {
+    let companies = await Company.filterByParams({ maxEmployees: 2 });
+    expect(companies).toEqual([
+      {
+        handle: "c1",
+        name: "C1",
+        description: "Desc1",
+        numEmployees: 1,
+        logoUrl: "http://c1.img",
+      },
+      {
+        handle: "c2",
+        name: "C2",
+        description: "Desc2",
+        numEmployees: 2,
+        logoUrl: "http://c2.img",
+      },
+    ]);
+  });
+
+  test("works: by name and employee range", async function () {
+    let companies = await Company.filterByParams({ name: "C", minEmployees: 2, maxEmployees: 3 });
+    expect(companies).toEqual([
+      {
+        handle: "c2",
+        name: "C2",
+        description: "Desc2",
+        numEmployees: 2,
+        logoUrl: "http://c2.img",
+      },
+      {
+        handle: "c3",
+        name: "C3",
+        description: "Desc3",
+        numEmployees: 3,
+        logoUrl: "http://c3.img",
+      },
+    ]);
   });
 });

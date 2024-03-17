@@ -61,7 +61,7 @@ class Company {
 
   static async filterByParams({ name, minEmployees, maxEmployees }) {
     let companies = await this.findAll();
-
+    // filter through db call not in js
     // Apply filtering based on query parameters
     if (name) {
       companies = companies.filter(company => company.name.toLowerCase().includes(name.toLowerCase()));

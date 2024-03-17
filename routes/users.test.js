@@ -265,6 +265,46 @@ describe("PATCH /users/:username", () => {
   });
 });
 
+/************************************** POST /users/:username/jobs/:id */
+
+describe("POST /users/:username/jobs/:id", function () {
+  test("works for own user applying to a job", async function () {
+    const jobResp = await db.query(`SELECT id FROM jobs WHERE title='Job1'`);
+    const jobId = jobResp.rows[0].id;
+
+    const resp = await request(app)
+        .post(`/users/u1/jobs/${jobId}`)
+        .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(200);
+    expect(resp.body).toEqual({ applied: jobId });
+  });
+
+  test("unauth for guests applying to a job", async function () {
+    const jobResp = await db.query(`SELECT id FROM jobs WHERE title='Job1'`);
+    const jobId = jobResp.rows[0].id;
+
+    const resp = await request(app).post(`/users/u1/jobs/${jobId}`);
+    expect(resp.statusCode).toEqual(401);
+  });
+
+  test("bad request for applying to a non-existent job", async function () {
+    const resp = await request(app)
+        .post(`/users/u1/jobs/999999`)
+        .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(400);
+  });
+
+  test("not found for non-existent user applying", async function () {
+    const jobResp = await db.query(`SELECT id FROM jobs WHERE title='Job1'`);
+    const jobId = jobResp.rows[0].id;
+
+    const resp = await request(app)
+        .post(`/users/nope/jobs/${jobId}`)
+        .set("authorization", `Bearer ${u1Token}`);
+    expect(resp.statusCode).toEqual(404);
+  });
+});
+
 /************************************** DELETE /users/:username */
 
 describe("DELETE /users/:username", function () {

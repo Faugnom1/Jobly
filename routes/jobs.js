@@ -1,6 +1,6 @@
 "use strict";
 
-/** Routes for jobs. */
+/** Routes for jobs. */ 
 
 const jsonschema = require("jsonschema");
 const express = require("express");
@@ -28,7 +28,7 @@ const router = new express.Router();
  * 
  * Authorization required: Logged in, Admin
  */
-router.post("/", ensureLoggedIn, authenticateJWT, ensureAdmin, async function (req, res, next) {
+router.post("/", async function (req, res, next) {
     try {
       const validator = jsonschema.validate(req.body, jobNewSchema);
       if (!validator.valid) {
@@ -53,11 +53,11 @@ router.post("/", ensureLoggedIn, authenticateJWT, ensureAdmin, async function (r
  */
 router.get("/", async function (req, res, next) {
     try {
-      const { title, minSalary, equity } = req.query;
+      const { title, salary, equity } = req.query;
   
       const filters = {};
       if (title) filters.title = title;
-      if (minSalary) filters.minSalary = parseInt(minSalary);
+      if (salary) filters.salary = parseInt(salary);
       if (equity) filters.equity = equity;
   
       const jobs = await Job.filterByParams(filters);

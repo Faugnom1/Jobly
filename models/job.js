@@ -26,18 +26,18 @@ static async findAll() {
     return jobsRes.rows;
   }
 
-  static async filterByParams({ title, minSalary, equity }) {
+  static async filterByParams({ title, salary, equity }) {
     let jobs = await this.findAll();
 
     // Apply filtering based on query parameters
     if (title) {
       jobs = jobs.filter(job => job.title.toLowerCase().includes(title.toLowerCase()));
     }
-    if (minSalary) {
+    if (salary) {
       jobs = jobs.filter(job => job.salary >= parseInt(salary));
     }
-    if (equity === true) {
-        jobs = jobs.filter(job => job.equity > 0);
+    if (equity === "true") {
+        jobs = jobs.filter(job => job.equity  > 0 && job.equity != null);
       }
 
     return jobs;

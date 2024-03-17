@@ -50,6 +50,38 @@ describe("Job.filterByParams", function () {
     ]);
   });
 
+  test("works: with min salary filter", async function () {
+    const jobs = await Job.filterByParams({ minSalary: 100000 });
+    expect(jobs).toEqual([
+      {
+        id: expect.any(Number),
+        title: "Data Scientist",
+        salary: 110000,
+        equity: "0.2",
+        CompanyHandle: "amazon",
+      },
+    ]);
+  });
+  
+  test("works: with min salary filter corrected", async function () {
+    const jobs = await Job.filterByParams({ salary: 100000 });
+    expect(jobs).toEqual([
+      {
+        id: expect.any(Number),
+        title: "Data Scientist",
+        salary: 110000,
+        equity: "0.2",
+        CompanyHandle: "amazon",
+      },
+      {
+        id: expect.any(Number),
+        title: "Software Engineer",
+        salary: 120000,
+        equity: "0",
+        CompanyHandle: "google",
+      },
+    ]);
+  });
   test("works: with equity filter", async function () {
     const jobs = await Job.filterByParams({ equity: true });
     expect(jobs).toEqual([
@@ -63,3 +95,5 @@ describe("Job.filterByParams", function () {
     ]);
   });
 });
+
+
